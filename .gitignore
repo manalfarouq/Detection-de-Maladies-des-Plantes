@@ -1,0 +1,39 @@
+# Environnements virtuels
+venv/
+.venv/
+myvenv/
+
+# Caches Python
+__pycache__/
+.pytest_cache/
+
+
+# IDE / Éditeurs
+.idea/
+.vscode/
+.history/
+
+
+# Jupyter
+.ipynb_checkpoints/
+
+
+# Données et résultats
+data/
+
+
+# Modèles lourds / ML
+notebooks/*.keras
+notebooks/*.h5
+facial_detection_model.keras
+
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+
+# Fichiers sensibles / configuration
+.env
