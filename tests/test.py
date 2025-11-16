@@ -16,7 +16,27 @@ from app.database import get_db
 from app.models import Base, PlantDisease
 
 
+# Configuration de la base de données de test PostgreSQL
+TEST_DATABASE_URL = os.getenv(
+    "TEST_DATABASE_URL",
+    "postgresql://user:password@localhost/test_plant_diseases"
+)
+
+engine = create_engine(TEST_DATABASE_URL)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
+
 
 def test_model_load():
     model = load_model("notebooks/facial_detection_model.keras")
