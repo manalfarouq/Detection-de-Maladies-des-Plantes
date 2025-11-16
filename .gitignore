@@ -37,3 +37,6 @@ facial_detection_model.keras
 
 # Fichiers sensibles / configuration
 .env
+
+
+.tox/

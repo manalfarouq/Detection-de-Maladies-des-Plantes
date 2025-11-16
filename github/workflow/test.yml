@@ -1,0 +1,46 @@
+name: Run Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      USER_DB: test_user
+      PASSWORD: test_pass
+      HOST: localhost
+      PORT: 5432
+      DATABASE: test_db
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installer PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install postgresql postgresql-contrib -y
+          sudo service postgresql start
+          # Créer l'utilisateur et la base de test
+          sudo -u postgres psql -c "CREATE USER $USER_DB WITH PASSWORD '$PASSWORD';"
+          sudo -u postgres psql -c "CREATE DATABASE $DATABASE OWNER $USER_DB;"
+
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install --no-root
+
+      - name: Exécuter les tests
+        run: |
+          PYTHONPATH=$(pwd) poetry run pytest --cov=app --maxfail=1 -v
+
+      - name: Afficher le rapport de couverture
+        run: |
+          poetry run coverage report
+          poetry run coverage xml
